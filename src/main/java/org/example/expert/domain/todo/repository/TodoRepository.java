@@ -6,7 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.config.Task;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface TodoRepository extends JpaRepository<Todo, Long> {
@@ -18,4 +21,11 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             "LEFT JOIN t.user " +
             "WHERE t.id = :todoId")
     Optional<Todo> findByIdWithUser(@Param("todoId") Long todoId);
+
+    @Query("SELECT t FROM Todo t " +
+            "WHERE (:weather IS NULL OR t.weather = :weather) " +
+            "AND (:start IS NULL OR t.modifiedAt >= :start) " +
+            "AND (:end IS NULL OR t.modifiedAt <= :end) " +
+            "ORDER BY t.modifiedAt DESC")
+    Page<Todo> findByWeatherAndModifiedAtBetween(@Param("weather") String weather, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end, Pageable pageable);
 }
