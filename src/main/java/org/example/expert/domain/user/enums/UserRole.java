@@ -5,7 +5,18 @@ import org.example.expert.domain.common.exception.InvalidRequestException;
 import java.util.Arrays;
 
 public enum UserRole {
-    ADMIN, USER;
+    ADMIN("ROLE_ADMIN"),
+    USER("ROLE_USER");
+
+    private final String authority;
+
+    UserRole(String authority) {
+        this.authority = authority;
+    }
+
+    public String getAuthority() {
+        return authority;
+    }
 
     public static UserRole of(String role) {
         return Arrays.stream(UserRole.values())
